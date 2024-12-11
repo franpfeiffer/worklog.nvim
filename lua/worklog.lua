@@ -152,7 +152,7 @@ function M.setup(opts)
     M.state.timer:start(
     M.config.commitInterval * 1000,
     M.config.commitInterval * 1000,
-    vim.schedule(function()
+    vim.schedule_wrap(function()
         M.commitLog()
     end)
     )
