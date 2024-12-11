@@ -1,4 +1,4 @@
-# worklog.md
+# Worklog
 
 ## Overview
 worklog.md is a Neovim plugin automatically captures and commits a summary of 
@@ -110,7 +110,7 @@ use {
 ```
 
 ## Manual Triggering
-You can manually trigger a work summary commit using the `:worklog` command.
+You can manually trigger a work summary commit using the `:Worklog` command.
 
 ## Requirements
 - Neovim 0.7+
