@@ -3,14 +3,14 @@ local M = {}
 M.config = {
     repoPath = nil,
     logFile = 'WORKLOG.md',
-    commitInterval = 1800, --> 30min
+    commitInterval = 1800,
+
 }
 
 M.state = {
     timer = nil,
     lastCommitTime = nil,
     isRunning = false,
-
 }
 
 local function execute_command(cmd)
@@ -30,6 +30,7 @@ function M.capture_work_log()
     local log = {}
 
     if not M.config.repoPath or M.config.repoPath == "" then
+
         vim.notify("Repository path not set. Please configure repoPath.", vim.log.levels.ERROR)
         return nil
     end
@@ -42,12 +43,11 @@ function M.capture_work_log()
     local modifiedFilesCmd = string.format("cd %s && git status --porcelain", M.config.repoPath)
     local modifiedFiles = execute_command(modifiedFilesCmd) or "No modified files"
     local recentChanges_cmd = string.format(
-    "cd %s && git diff --stat HEAD $(git log -1 --format='%%H' 2>/dev/null || echo HEAD)",
-    M.config.repoPath
+        "cd %s && git diff --stat HEAD $(git log -1 --format='%%H' 2>/dev/null || echo HEAD)",
+        M.config.repoPath
     )
     local recentChanges = execute_command(recentChanges_cmd) or "No recent changes"
     local currentFile = vim.fn.expand('%:p')
-    local bufferContent = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
 
     table.insert(log, "# Work Logs")
     table.insert(log, string.format("**Timestamp:** %s", os.date("%d-%m-%Y %H:%M:%S")))
@@ -76,6 +76,7 @@ function M.commitLog()
     if not log then return end
 
     local file = io.open(logPath, "a")
+
     if file then
         file:write(log .. "\n\n")
         file:close()
@@ -86,9 +87,9 @@ function M.commitLog()
 
     local gitAddCmd = string.format("cd %s && git add %s", M.config.repoPath, M.config.logFile)
     local gitCommitCmd = string.format(
-    "cd %s && git commit -m 'Work log at %s'",
-    M.config.repoPath,
-    os.date("%d-%m-%Y %H:%M:%S")
+        "cd %s && git commit -m 'Work log at %s'",
+        M.config.repoPath,
+        os.date("%d-%m-%Y %H:%M:%S")
     )
     execute_command(gitAddCmd)
     local commitResult = execute_command(gitCommitCmd)
@@ -122,10 +123,9 @@ function M.status()
 
     if timeRemaining > 0 then
         vim.notify(string.format(
-        "Next work log in: %s\nRepository: %s",
-        format_timeRemaining(timeRemaining),
-        M.config.repoPath
-
+            "Next work log in: %s\nRepository: %s",
+            format_timeRemaining(timeRemaining),
+            M.config.repoPath
         ), vim.log.levels.INFO)
     else
         vim.notify("Commit is due. Run commit manually or wait for next interval.", vim.log.levels.WARN)
@@ -144,13 +144,14 @@ function M.setup(opts)
 
     if M.state.timer then
         M.state.timer:start(
-        M.config.commitInterval * 1000,
-        M.config.commitInterval * 1000,
-        function()
-            vim.schedule(function()
-                M.commitLog()
-            end)
-        end
+            M.config.commitInterval * 1000,
+            M.config.commitInterval * 1000,
+
+            function()
+                vim.schedule(function()
+                    M.commitLog()
+                end)
+            end
         )
     end
 
@@ -161,11 +162,10 @@ function M.setup(opts)
     vim.api.nvim_create_user_command('WorklogStatus', M.status, {})
     vim.api.nvim_create_user_command('WorklogStop', M.stop, {})
     vim.notify(string.format(
-    "Worklog plugin initialized\nRepository: %s\nInterval: %d seconds",
-    M.config.repoPath,
-    M.config.commitInterval
+        "Worklog plugin initialized\nRepository: %s\nInterval: %d seconds",
+        M.config.repoPath,
+        M.config.commitInterval
     ), vim.log.levels.INFO)
 end
 
 return M
-
