@@ -10,6 +10,7 @@ M.state = {
     timer = nil,
     lastCommitTime = nil,
     isRunning = false,
+
 }
 
 local function execute_command(cmd)
@@ -40,7 +41,6 @@ function M.capture_work_log()
 
     local modifiedFilesCmd = string.format("cd %s && git status --porcelain", M.config.repoPath)
     local modifiedFiles = execute_command(modifiedFilesCmd) or "No modified files"
-
     local recentChanges_cmd = string.format(
     "cd %s && git diff --stat HEAD $(git log -1 --format='%%H' 2>/dev/null || echo HEAD)",
     M.config.repoPath
@@ -61,7 +61,6 @@ function M.capture_work_log()
     table.insert(log, "```")
     table.insert(log, bufferContent:sub(1, 500) .. (#bufferContent > 500 and "..." or ""))
     table.insert(log, "```")
-
     return table.concat(log, "\n")
 end
 
@@ -87,20 +86,15 @@ function M.commitLog()
 
     local gitAddCmd = string.format("cd %s && git add %s", M.config.repoPath, M.config.logFile)
     local gitCommitCmd = string.format(
-
     "cd %s && git commit -m 'Work log at %s'",
     M.config.repoPath,
     os.date("%d-%m-%Y %H:%M:%S")
     )
-
-    local addResult = execute_command(gitAddCmd)
+    execute_command(gitAddCmd)
     local commitResult = execute_command(gitCommitCmd)
-
     M.state.lastCommitTime = os.time()
-
     vim.notify("Work log committed:\n" .. (commitResult or "No changes to commit"), vim.log.levels.INFO)
 end
-
 
 function M.stop()
     if M.state.timer then
@@ -111,7 +105,6 @@ function M.stop()
         vim.notify("Worklog timer stopped", vim.log.levels.INFO)
     end
 end
-
 
 function M.status()
     if not M.state.isRunning then
@@ -132,6 +125,7 @@ function M.status()
         "Next work log in: %s\nRepository: %s",
         format_timeRemaining(timeRemaining),
         M.config.repoPath
+
         ), vim.log.levels.INFO)
     else
         vim.notify("Commit is due. Run commit manually or wait for next interval.", vim.log.levels.WARN)
@@ -140,22 +134,25 @@ end
 
 function M.setup(opts)
     M.config = vim.tbl_deep_extend("force", M.config, opts or {})
-
     if not M.config.repoPath or M.config.repoPath == "" then
         vim.notify("Error: repoPath must be set in configuration", vim.log.levels.ERROR)
         return
-
     end
 
     M.stop()
     M.state.timer = vim.loop.new_timer()
-    M.state.timer:start(
-    M.config.commitInterval * 1000,
-    M.config.commitInterval * 1000,
-    vim.schedule_wrap(function()
-        M.commitLog()
-    end)
-    )
+
+    if M.state.timer then
+        M.state.timer:start(
+        M.config.commitInterval * 1000,
+        M.config.commitInterval * 1000,
+        function()
+            vim.schedule(function()
+                M.commitLog()
+            end)
+        end
+        )
+    end
 
     M.state.isRunning = true
     M.state.lastCommitTime = os.time()
@@ -163,17 +160,6 @@ function M.setup(opts)
     vim.api.nvim_create_user_command('Worklog', M.commitLog, {})
     vim.api.nvim_create_user_command('WorklogStatus', M.status, {})
     vim.api.nvim_create_user_command('WorklogStop', M.stop, {})
-
-    vim.api.nvim_set_keymap('n', '<leader>sw', 
-    '<cmd>lua require("worklog").commitLog()<CR>',
-    { noremap = true, silent = true, desc = 'Commit Work Summary' }
-    )
-
-    vim.api.nvim_set_keymap('n', '<leader>ss', 
-    '<cmd>lua require("worklog").status()<CR>',
-    { noremap = true, silent = true, desc = 'Check Worklog Status' }
-    )
-
     vim.notify(string.format(
     "Worklog plugin initialized\nRepository: %s\nInterval: %d seconds",
     M.config.repoPath,
@@ -182,3 +168,4 @@ function M.setup(opts)
 end
 
 return M
+
