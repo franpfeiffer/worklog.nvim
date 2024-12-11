@@ -73,7 +73,7 @@ function M.setup(opts)
     )
     vim.api.nvim_create_user_command('WorkLog', M.commit_log, {})
     vim.api.nvim_set_keymap('n', '<leader>sw',
-        '<cmd>lua require("work-log").commit_log()<CR>',
+        '<cmd>lua require("worklog").commit_log()<CR>',
         { noremap = true, silent = true, desc = 'commit to worklog' }
     )
 end
