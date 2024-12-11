@@ -19,6 +19,8 @@ use {
   config = function()
     require('worklog').setup({
       repoPath = '/path/to/your/project/repo'
+      logFile = 'yourlogfile.md' -- Optional (default: 'WORKLOG.md')
+      commitInterval = 420 -- Optional (default: 1800)
     })
   end
 }
@@ -43,9 +45,7 @@ use {
   'franpfeiffer/worklog.nvim',
   config = function()
     require('worklog').setup({
-      repoPath = '/home/user/projects/main-project',
-      summary-file = 'WORKLOG.md',  -- Custom summary filename
-      commit-interval = 3600  -- Change interval to 1 hour
+      repoPath = '/path/to/your/project/repo'
     })
   end
 
@@ -57,9 +57,9 @@ use {
   'franpfeiffer/worklog.nvim',
   config = function()
     require('worklog').setup({
-      repoPath = '/home/user/projects/main-project',
-      summary-file = 'DEV-JOURNAL.md',  -- Custom summary filename
-      commit-interval = 3600  -- Change interval to 1 hour
+      repoPath = '/path/to/your/project/repo'
+      logFile = 'yourlogfile.md' -- Optional (default: 'WORKLOG.md')
+      commitInterval = 420 -- Optional (default: 1800)
     })
   end
 }
@@ -73,16 +73,16 @@ use {
   config = function()
     -- Project 1
     require('worklog').setup({
-      repoPath = '/home/user/projects/project-1',
-
-      summary-file = 'PROJECT-1-SUMMARY.md'
+      repoPath = '/path/to/your/project/repo'
+      logFile = 'yourlogfile.md' -- Optional (default: 'WORKLOG.md')
+      commitInterval = 420 -- Optional (default: 1800)
     })
 
     -- Project 2
     require('worklog').setup({
-      repoPath = '/home/user/projects/project-2',
-      summary-file = 'PROJECT-2-SUMMARY.md',
-      commit-interval = 7200  -- 2 hours
+      repoPath = '/path/to/your/project/repo'
+      logFile = 'yourlogfile.md' -- Optional (default: 'WORKLOG.md')
+      commitInterval = 420 -- Optional (default: 1800)
     })
   end
 }
@@ -95,15 +95,16 @@ use {
   config = function()
     -- Project 1
     require('worklog').setup({
-      repoPath = '/home/user/projects/project-1',
-      summary-file = 'PROJECT-1-SUMMARY.md'
+      repoPath = '/path/to/your/project/repo'
+      logFile = 'yourlogfile.md' -- Optional (default: 'WORKLOG.md')
+      commitInterval = 420 -- Optional (default: 1800)
     })
 
     -- Project 2 
     require('worklog').setup({
-      repoPath = '/home/user/projects/project-2',
-      summary-file = 'PROJECT-2-SUMMARY.md',
-      commit-interval = 7200  -- 2 hours
+      repoPath = '/path/to/your/project/repo'
+      logFile = 'yourlogfile.md' -- Optional (default: 'WORKLOG.md')
+      commitInterval = 420 -- Optional (default: 1800)
     })
   end
 }
