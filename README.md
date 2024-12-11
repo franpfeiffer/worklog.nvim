@@ -12,7 +12,7 @@ your work to a specified Git repository every 30 minutes.
 
 ## Installation
 
-### Using packer.nvim
+### Using packer
 ```lua
 use {
   'franpfeiffer/worklog.nvim',
@@ -24,7 +24,7 @@ use {
 }
 ```
 
-### Using lazy.nvim
+### Using lazy
 ```lua
 {
   'franpfeiffer/worklog.nvim',
@@ -52,7 +52,7 @@ use {
 }
 ```
 ```lua
--- Lazy.nvim
+-- Lazy
 {
   'franpfeiffer/worklog.nvim',
   config = function()
@@ -89,7 +89,7 @@ use {
 ```
 
 ```lua
--- Lazy.nvim
+-- Lazy
 {
   'yourusername/worklog.nvim',
   config = function()
