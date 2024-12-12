@@ -1,8 +1,8 @@
 # Worklog
 
 ## Overview
-worklog.md is a Neovim plugin automatically captures and commits a summary of 
-your work to a specified Git repository every 30 minutes.
+worklog is a Neovim plugin automatically captures and commits a 
+summary of your work to a specified Git repository.
 
 ## Features
 - Captures modified files
@@ -18,9 +18,7 @@ use {
   'franpfeiffer/worklog.nvim',
   config = function()
     require('worklog').setup({
-      repoPath = '/path/to/your/project/repo'
-      logFile = 'yourlogfile.md' -- Optional (default: 'WORKLOG.md')
-      commitInterval = 420 -- Optional (default: 1800)
+      repoPath = '/path/to/your/log/repo'
     })
   end
 }
@@ -32,7 +30,7 @@ use {
   'franpfeiffer/worklog.nvim',
   config = function()
     require('worklog').setup({
-      repoPath = '/path/to/your/project/repo'
+      repoPath = '/path/to/your/log/repo'
     })
   end
 }
@@ -45,10 +43,11 @@ use {
   'franpfeiffer/worklog.nvim',
   config = function()
     require('worklog').setup({
-      repoPath = '/path/to/your/project/repo'
+      repoPath = '/path/to/your/log/repo'
+      logFile = 'yourlogfile.md' -- Optional (default: 'WORKLOG.md')
+      commitInterval = 420 -- Optional (default: 1800sec => 30min)
     })
   end
-
 }
 ```
 ```lua
@@ -59,59 +58,26 @@ use {
     require('worklog').setup({
       repoPath = '/path/to/your/project/repo'
       logFile = 'yourlogfile.md' -- Optional (default: 'WORKLOG.md')
-      commitInterval = 420 -- Optional (default: 1800)
+      commitInterval = 420 -- Optional (default: 1800sec => 30min)
     })
   end
 }
 ```
 
-## Multiple project support
-```lua
--- Packer
-use {
-  'franpfeiffer/worklog.nvim',
-  config = function()
-    -- Project 1
-    require('worklog').setup({
-      repoPath = '/path/to/your/project/repo'
-      logFile = 'yourlogfile.md' -- Optional (default: 'WORKLOG.md')
-      commitInterval = 420 -- Optional (default: 1800)
-    })
+## Usage
 
-    -- Project 2
-    require('worklog').setup({
-      repoPath = '/path/to/your/project/repo'
-      logFile = 'yourlogfile.md' -- Optional (default: 'WORKLOG.md')
-      commitInterval = 420 -- Optional (default: 1800)
-    })
-  end
-}
-```
+### Manual Triggering
+Use the `:Worklog` command in Neovim to manually trigger a work log capture 
+and commit immediately.
 
-```lua
--- Lazy
-{
-  'yourusername/worklog.nvim',
-  config = function()
-    -- Project 1
-    require('worklog').setup({
-      repoPath = '/path/to/your/project/repo'
-      logFile = 'yourlogfile.md' -- Optional (default: 'WORKLOG.md')
-      commitInterval = 420 -- Optional (default: 1800)
-    })
+### Checking Status
+Use the `:WorklogStatus` command to check the status of the worklog timer.
+It will display the time remaining until the next automatic commit or 
+indicate that a commit is due.
 
-    -- Project 2 
-    require('worklog').setup({
-      repoPath = '/path/to/your/project/repo'
-      logFile = 'yourlogfile.md' -- Optional (default: 'WORKLOG.md')
-      commitInterval = 420 -- Optional (default: 1800)
-    })
-  end
-}
-```
+### Stopping the Timer
+Use the `:WorklogStop` command to stop the worklog timer.
 
-## Manual Triggering
-You can manually trigger a work summary commit using the `:Worklog` command.
 
 ## Requirements
 - Neovim 0.7+

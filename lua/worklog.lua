@@ -4,7 +4,6 @@ M.config = {
     repoPath = nil,
     logFile = 'WORKLOG.md',
     commitInterval = 1800,
-
 }
 
 M.state = {
@@ -28,9 +27,7 @@ end
 
 function M.capture_work_log()
     local log = {}
-
     if not M.config.repoPath or M.config.repoPath == "" then
-
         vim.notify("Repository path not set. Please configure repoPath.", vim.log.levels.ERROR)
         return nil
     end
@@ -48,6 +45,7 @@ function M.capture_work_log()
     )
     local recentChanges = execute_command(recentChanges_cmd) or "No recent changes"
     local currentFile = vim.fn.expand('%:p')
+    local bufferContent = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
 
     table.insert(log, "# Work Logs")
     table.insert(log, string.format("**Timestamp:** %s", os.date("%d-%m-%Y %H:%M:%S")))
@@ -73,20 +71,28 @@ function M.commitLog()
     local logPath = string.format("%s/%s", M.config.repoPath, M.config.logFile)
 
     local log = M.capture_work_log()
+
     if not log then return end
 
     local file = io.open(logPath, "a")
-
     if file then
         file:write(log .. "\n\n")
         file:close()
+
     else
         vim.notify("Failed to open log file: " .. logPath, vim.log.levels.ERROR)
         return
     end
 
+    local user_input = vim.fn.input("Commit work log? (y/n): ")
+    if user_input ~= "y" and user_input ~= "Y" then
+        vim.notify("Commit canceled.", vim.log.levels.INFO)
+        return
+    end
+
     local gitAddCmd = string.format("cd %s && git add %s", M.config.repoPath, M.config.logFile)
     local gitCommitCmd = string.format(
+
         "cd %s && git commit -m 'Work log at %s'",
         M.config.repoPath,
         os.date("%d-%m-%Y %H:%M:%S")
@@ -146,10 +152,9 @@ function M.setup(opts)
         M.state.timer:start(
             M.config.commitInterval * 1000,
             M.config.commitInterval * 1000,
-
             function()
                 vim.schedule(function()
-                    M.commitLog()
+                    M.commitLog() -- Call commitLog() directly
                 end)
             end
         )
@@ -166,6 +171,7 @@ function M.setup(opts)
         M.config.repoPath,
         M.config.commitInterval
     ), vim.log.levels.INFO)
+
 end
 
 return M
