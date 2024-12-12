@@ -16,6 +16,7 @@ local function execute_command(cmd)
     local handle = io.popen(cmd)
     local result = handle:read("*a")
     handle:close()
+
     return result
 end
 
@@ -63,13 +64,13 @@ function M.capture_work_log()
 end
 
 function M.commitLog()
+
     if not M.config.repoPath or M.config.repoPath == "" then
         vim.notify("Repository path not set. Please configure repoPath.", vim.log.levels.ERROR)
         return
     end
 
     local logPath = string.format("%s/%s", M.config.repoPath, M.config.logFile)
-
     local log = M.capture_work_log()
 
     if not log then return end
@@ -78,7 +79,6 @@ function M.commitLog()
     if file then
         file:write(log .. "\n\n")
         file:close()
-
     else
         vim.notify("Failed to open log file: " .. logPath, vim.log.levels.ERROR)
         return
@@ -92,9 +92,9 @@ function M.commitLog()
 
     local gitAddCmd = string.format("cd %s && git add %s", M.config.repoPath, M.config.logFile)
     local gitCommitCmd = string.format(
-
         "cd %s && git commit -m 'Work log at %s'",
         M.config.repoPath,
+
         os.date("%d-%m-%Y %H:%M:%S")
     )
     execute_command(gitAddCmd)
@@ -145,6 +145,12 @@ function M.setup(opts)
         return
     end
 
+    local start_input = vim.fn.input("Start worklog timer? (y/n): ")
+    if start_input:lower() ~= "y" then
+        vim.notify("Worklog initialization canceled.", vim.log.levels.INFO)
+        return
+    end
+
     M.stop()
     M.state.timer = vim.loop.new_timer()
 
@@ -154,7 +160,7 @@ function M.setup(opts)
             M.config.commitInterval * 1000,
             function()
                 vim.schedule(function()
-                    M.commitLog() -- Call commitLog() directly
+                    M.commitLog()
                 end)
             end
         )
@@ -171,7 +177,7 @@ function M.setup(opts)
         M.config.repoPath,
         M.config.commitInterval
     ), vim.log.levels.INFO)
-
 end
 
 return M
+
